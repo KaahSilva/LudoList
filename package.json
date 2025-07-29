@@ -1,7 +1,7 @@
 {
   "name": "ludolist",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,10 +9,26 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-navigation/drawer": "^7.5.5",
+    "@supabase/supabase-js": "^2.52.1",
+    "@tanstack/react-query": "^5.83.0",
+    "axios": "^1.11.0",
     "expo": "~53.0.20",
+    "expo-font": "~13.3.2",
+    "expo-router": "~5.1.4",
+    "expo-splash-screen": "~0.30.10",
     "expo-status-bar": "~2.2.3",
+    "lucide-react-native": "^0.526.0",
     "react": "19.0.0",
-    "react-native": "0.79.5"
+    "react-native": "0.79.5",
+    "react-native-gesture-handler": "~2.24.0",
+    "react-native-paper": "^5.14.5",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-vector-icons": "^10.3.0",
+    "zod": "^4.0.13",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
