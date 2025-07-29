@@ -2,18 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native"
-import { TextInput, Button, Card, Text, HelperText } from "react-native-paper"
+import { TextInput, Button, Card, Text, HelperText, IconButton } from "react-native-paper"
 import { supabase } from "../../../../lib/supabase"
 import { useRouter, useLocalSearchParams } from "expo-router"
 import { z } from "zod"
 
-
 const gameSchema = z
   .object({
-    name: z
-      .string()
-      .min(1, "Nome é obrigatório")
-      .transform((val) => val.trim()),
+    name: z.string().min(1, "Nome é obrigatório").transform((val) => val.trim()),
     description: z.string().transform((val) => val.trim()),
     min_players: z
       .string()
@@ -34,16 +30,6 @@ const gameSchema = z
     path: ["max_players"],
   })
 
-interface Game {
-  id: number
-  name: string
-  description: string
-  min_players: number
-  max_players: number
-  playing_time: number
-  thumbnail_url: string
-}
-
 export default function EditGameScreen() {
   const { id } = useLocalSearchParams()
   const [formData, setFormData] = useState({
@@ -62,7 +48,6 @@ export default function EditGameScreen() {
   const fetchGame = async () => {
     try {
       const { data, error } = await supabase.from("games").select("*").eq("id", id).single()
-
       if (error) {
         console.error("Erro ao buscar jogo:", error)
         return
@@ -87,30 +72,24 @@ export default function EditGameScreen() {
 
   const validateForm = () => {
     const validation = gameSchema.safeParse(formData)
-
     if (!validation.success) {
       const newErrors: Record<string, string> = {}
-
       validation.error.issues.forEach((issue) => {
         const field = issue.path[0] as string
         newErrors[field] = issue.message
       })
-
       setErrors(newErrors)
       return false
     }
-
     setErrors({})
     return true
   }
 
   const handleSubmit = async () => {
     if (!validateForm()) return
-
     setLoading(true)
     try {
       const validatedData = gameSchema.parse(formData)
-
       const { error } = await supabase
         .from("games")
         .update({
@@ -159,13 +138,15 @@ export default function EditGameScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      {/* Header customizado */}
+      <View style={styles.customHeader}>
+        <IconButton icon="arrow-left" onPress={() => router.back()} />
+        <Text variant="titleLarge" style={styles.customHeaderText}>Editar Jogo</Text>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Card style={styles.card}>
           <Card.Content>
-            <Text variant="headlineSmall" style={styles.title}>
-              Editar Jogo
-            </Text>
-
             <View style={styles.form}>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -175,9 +156,7 @@ export default function EditGameScreen() {
                   mode="outlined"
                   error={!!errors.name}
                 />
-                <HelperText type="error" visible={!!errors.name}>
-                  {errors.name}
-                </HelperText>
+                <HelperText type="error" visible={!!errors.name}>{errors.name}</HelperText>
               </View>
 
               <View style={styles.inputContainer}>
@@ -201,9 +180,7 @@ export default function EditGameScreen() {
                     keyboardType="numeric"
                     error={!!errors.min_players}
                   />
-                  <HelperText type="error" visible={!!errors.min_players}>
-                    {errors.min_players}
-                  </HelperText>
+                  <HelperText type="error" visible={!!errors.min_players}>{errors.min_players}</HelperText>
                 </View>
 
                 <View style={[styles.inputContainer, styles.halfWidth]}>
@@ -215,9 +192,7 @@ export default function EditGameScreen() {
                     keyboardType="numeric"
                     error={!!errors.max_players}
                   />
-                  <HelperText type="error" visible={!!errors.max_players}>
-                    {errors.max_players}
-                  </HelperText>
+                  <HelperText type="error" visible={!!errors.max_players}>{errors.max_players}</HelperText>
                 </View>
               </View>
 
@@ -230,9 +205,7 @@ export default function EditGameScreen() {
                   keyboardType="numeric"
                   error={!!errors.playing_time}
                 />
-                <HelperText type="error" visible={!!errors.playing_time}>
-                  {errors.playing_time}
-                </HelperText>
+                <HelperText type="error" visible={!!errors.playing_time}>{errors.playing_time}</HelperText>
               </View>
 
               <View style={styles.inputContainer}>
@@ -246,16 +219,8 @@ export default function EditGameScreen() {
               </View>
 
               <View style={styles.buttonContainer}>
-                <Button mode="outlined" onPress={() => router.back()} style={styles.button}>
-                  Cancelar
-                </Button>
-                <Button
-                  mode="contained"
-                  onPress={handleSubmit}
-                  loading={loading}
-                  disabled={loading}
-                  style={styles.button}
-                >
+                <Button mode="outlined" onPress={() => router.back()} style={styles.button}>Cancelar</Button>
+                <Button mode="contained" onPress={handleSubmit} loading={loading} disabled={loading} style={styles.button}>
                   Salvar Alterações
                 </Button>
               </View>
@@ -276,16 +241,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  customHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 20,
+    paddingHorizontal: 8,
+    paddingBottom: 12,
+    backgroundColor: "#e7e3e9",
+  },
+  customHeaderText: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
   scrollContent: {
     padding: 16,
   },
   card: {
     elevation: 2,
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: 24,
-    fontWeight: "bold",
   },
   form: {
     gap: 8,

@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { View, StyleSheet, FlatList } from "react-native"
 import { Card, Text, Button, FAB, IconButton, Dialog, Portal } from "react-native-paper"
 import { supabase } from "../../../lib/supabase"
 import { useRouter } from "expo-router"
 import { useFocusEffect } from "@react-navigation/native"
-import { useCallback } from "react"
 
 interface Game {
   id: number
@@ -44,9 +43,7 @@ export default function AdminGamesScreen() {
 
   const deleteGame = async (gameId: number) => {
     try {
-  
       const { error } = await supabase.from("games").delete().eq("id", gameId)
-
       if (error) {
         console.error("Erro ao deletar jogo:", error)
         return
@@ -86,16 +83,14 @@ export default function AdminGamesScreen() {
     </Card>
   )
 
- 
   useFocusEffect(
     useCallback(() => {
-     
       const timer = setTimeout(() => {
         fetchGames()
       }, 300)
 
       return () => clearTimeout(timer)
-    }, []),
+    }, [])
   )
 
   useEffect(() => {
@@ -104,6 +99,11 @@ export default function AdminGamesScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Header personalizado no topo */}
+      <View style={styles.customHeader}>
+        <Text variant="titleLarge" style={styles.customHeaderText}>Gerenciar Jogos</Text>
+      </View>
+
       <FlatList
         data={games}
         renderItem={renderGame}
@@ -111,6 +111,7 @@ export default function AdminGamesScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
+
       <FAB icon="plus" style={styles.fab} onPress={() => router.push("/(drawer)/admin/add-game")} />
 
       <Portal>
@@ -119,7 +120,7 @@ export default function AdminGamesScreen() {
           <Dialog.Content>
             <Text variant="bodyMedium">Tem certeza que deseja excluir o jogo "{deleteDialog.game?.name}"?</Text>
             <Text variant="bodySmall" style={styles.warningText}>
-               Isso também deletará TODAS as avaliações e listas de usuários relacionadas a este jogo. Esta ação não
+              Isso também deletará TODAS as avaliações e listas de usuários relacionadas a este jogo. Esta ação não
               pode ser desfeita.
             </Text>
           </Dialog.Content>
@@ -140,8 +141,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  customHeader: {
+    paddingTop: 30, 
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    backgroundColor: "#e7e3e9",
+    marginBottom:10
+  },
+  customHeaderText: {
+    fontWeight: "bold",
+  },
   listContent: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   card: {
     marginBottom: 16,
@@ -170,7 +182,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     margin: 16,
     right: 0,
-    bottom: 0,
+    bottom: 120,
+    
   },
   warningText: {
     marginTop: 8,

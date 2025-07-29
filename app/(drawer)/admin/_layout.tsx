@@ -17,26 +17,12 @@ export default function AdminLayout() {
     )
   }
 
-  return (
-    <Stack screenOptions={{ headerShown: true }}>
-      <Stack.Screen
-        name="games"
-        options={{
-          title: "Gerenciar Jogos",
-        }}
-      />
-      <Stack.Screen
-        name="add-game"
-        options={{
-          title: "Adicionar Jogo",
-        }}
-      />
-      <Stack.Screen
-        name="edit-game/[id]"
-        options={{
-          title: "Editar Jogo",
-        }}
-      />
+
+ return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="games" />
+      <Stack.Screen name="add-game" />
+      <Stack.Screen name="edit-game/[id]" />
     </Stack>
   )
 }

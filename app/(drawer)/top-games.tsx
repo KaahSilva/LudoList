@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#CD7F32",
   },
   defaultRank: {
-    backgroundColor: "#6200ee",
+    backgroundColor: "#d2b4fc",
   },
   rankNumber: {
     fontWeight: "bold",
